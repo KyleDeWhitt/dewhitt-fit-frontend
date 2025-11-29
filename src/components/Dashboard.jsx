@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import axiosInstance from '../api/axiosInstance'; 
 import axios from 'axios'; 
+// 👇 1. Import your new button
+import SubscribeButton from '../components/SubscribeButton';
 
 // Define the Base URL needed for other routes
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -15,28 +16,24 @@ function Dashboard() {
     const [recentLogs, setRecentLogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ✨ FIX 1: Look for the 'name' property sent by the backend
     const displayName = user?.name || 'Client'; 
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            const token = localStorage.getItem('authToken'); // Manually retrieve token
+            const token = localStorage.getItem('authToken'); 
 
             if (!token) {
                  setLoading(false);
-                 // If the token is somehow lost here, navigate to login
                  logout(); 
                  return;
             }
 
             try {
-                // Configuration to manually pass the token for non-user routes
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
 
-                // ✨ FIX 2: Fetching data from the separate /api/goals and /api/logs routes
                 const [goalsRes, logsRes] = await Promise.all([
                     axios.get(`${BASE_URL}/api/goals`, config),
                     axios.get(`${BASE_URL}/api/logs`, config)
@@ -47,7 +44,6 @@ function Dashboard() {
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
                 if (error.response?.status === 401) {
-                     // If the token is invalid here, force log out
                      logout();
                 }
             } finally {
@@ -58,7 +54,6 @@ function Dashboard() {
         fetchData();
     }, [logout]);
 
-    // Calculate a quick metric (e.g., total workouts)
     const totalWorkouts = recentLogs.length;
 
     // --- RENDER CODE ---
@@ -74,7 +69,7 @@ function Dashboard() {
                 </nav>
             </header>
             
-            <main className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <main className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
                 
                 {/* 1. Key Metrics Section */}
                 <section className="metrics-card" style={{ border: '1px solid #333', padding: '20px', borderRadius: '8px' }}>
@@ -112,8 +107,26 @@ function Dashboard() {
                         <p>No workouts logged yet. Go hit the gym! 💪</p>
                     )}
                 </section>
+
+                {/* 3. 👇 NEW: Membership Section */}
+                <section className="membership-card" style={{ border: '1px solid #333', padding: '20px', borderRadius: '8px', background: '#1a1a1a' }}>
+                    <h2>🚀 Membership Status</h2>
+                    <p style={{ marginBottom: '15px' }}>
+                        <strong>Current Plan:</strong> {user?.planTier === 'premium' ? 'Premium 🌟' : 'Free Tier'}
+                    </p>
+                    
+                    {/* Only show upgrade button if they aren't premium yet */}
+                    {user?.planTier !== 'premium' && (
+                        <div>
+                            <p style={{ fontSize: '0.9rem', color: '#aaa', marginBottom: '15px' }}>
+                                Unlock unlimited goals and advanced 3D analytics.
+                            </p>
+                            <SubscribeButton />
+                        </div>
+                    )}
+                </section>
                 
-                {/* 3. 3D Visualization Placeholder */}
+                {/* 4. 3D Visualization Placeholder */}
                 <section className="three-d-card" style={{ gridColumn: '1 / -1', border: '1px solid #333', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
                     <h2>✨ 3D Body Visualization</h2>
                     <div style={{ height: '200px', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
