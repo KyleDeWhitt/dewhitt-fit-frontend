@@ -7,7 +7,6 @@ import RegistrationForm from './components/RegistrationForm';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileSetup from './components/ProfileSetup';
-// 👇 NEW: Import the Admin Dashboard
 import AdminDashboard from './components/AdminDashboard';
 
 const GlobalStyles = () => (
@@ -60,8 +59,6 @@ function App() {
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/setup-profile" element={<ProfileSetup />} />
-                
-                {/* 👇 THIS IS THE MISSING LINE! */}
                 <Route path="/admin" element={<AdminDashboard />} />
             </Route>
             
