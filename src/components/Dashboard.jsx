@@ -3,7 +3,10 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
-import { Model as Logo } from './CloverLogo'; // Using the Clover for Dashboard
+
+// 👇 KEEP THIS IMPORT POINTING TO YOUR WORKING LOGO FILE
+import { Model as Logo } from './Logo'; 
+
 import CheckoutButton from './CheckoutButton'; 
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -21,8 +24,7 @@ function Dashboard() {
     const { user, logout } = useAuth();
     const [project, setProject] = useState(null);
     
-    // --- 1. RESPONSIVE STATE ---
-    // Detects if the screen is narrower than 1024px (Tablets & Phones)
+    // --- 1. RESPONSIVE STATE (Detect Mobile) ---
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
     useEffect(() => {
@@ -30,7 +32,7 @@ function Dashboard() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-    // ---------------------------
+    // -------------------------------------------
 
     useEffect(() => {
         const fetchProjectData = async () => {
@@ -59,10 +61,10 @@ function Dashboard() {
             
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '20px' : '40px' }}>
                 
-                {/* HEADER */}
+                {/* HEADER - Stacked on Mobile */}
                 <header style={{ 
                     display: 'flex', 
-                    flexDirection: isMobile ? 'column' : 'row', // Stack header on mobile
+                    flexDirection: isMobile ? 'column' : 'row', 
                     justifyContent: 'space-between', 
                     alignItems: isMobile ? 'flex-start' : 'center', 
                     gap: isMobile ? '20px' : '0',
@@ -83,28 +85,23 @@ function Dashboard() {
                         padding: '10px 24px', 
                         borderRadius: '8px',
                         cursor: 'pointer',
-                        width: isMobile ? '100%' : 'auto' // Full width button on mobile
+                        width: isMobile ? '100%' : 'auto'
                     }}>
                         Log Out
                     </button>
                 </header>
 
-                {/* MAIN GRID LAYOUT */}
+                {/* MAIN GRID LAYOUT - 1 Column on Mobile */}
                 <div style={{ 
                     display: 'grid', 
-                    // CHANGE 2: If Mobile, use 1 column. If Desktop, use 12 columns.
                     gridTemplateColumns: isMobile ? '1fr' : 'repeat(12, 1fr)', 
                     gap: '30px' 
                 }}>
 
                     {/* 1. VISUALIZER */}
                     <div style={{ 
-                        // CHANGE 3: If Mobile, span full width. If Desktop, span 8.
                         gridColumn: isMobile ? 'span 1' : 'span 8', 
-                        
-                        // Make height smaller on mobile so it doesn't take up the whole screen
-                        height: isMobile ? '400px' : '600px', 
-                        
+                        height: isMobile ? '400px' : '600px', // Smaller height on phone
                         position: 'relative', 
                         overflow: 'hidden', 
                         borderRadius: '24px',
@@ -112,7 +109,7 @@ function Dashboard() {
                         border: '1px solid rgba(255,255,255,0.05)',
                         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                     }}>
-                         <div style={{
+                        <div style={{
                             position: 'absolute', top: 30, left: 30, zIndex: 10,
                             display: 'flex', gap: '10px'
                         }}>
@@ -135,9 +132,7 @@ function Dashboard() {
 
                     {/* 2. ROADMAP */}
                     <div style={{ 
-                        // CHANGE 4: If Mobile, span full width. If Desktop, span 4.
                         gridColumn: isMobile ? 'span 1' : 'span 4', 
-                        
                         background: '#1e293b', 
                         borderRadius: '24px', 
                         padding: '30px',
@@ -191,7 +186,11 @@ function Dashboard() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {/* Button will now appear nicely below the visualizer on mobile */}
+                                            {isLocked && index === 1 && !isPremium && (
+                                                <div style={{ marginTop: '15px' }}>
+                                                    <CheckoutButton label="🔓 Unlock Phase 2" />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );
