@@ -55,14 +55,14 @@ export function Model(props) {
 
   return (
     // APPLY THE DYNAMIC SCALE HERE 👇
-    <group {...props} dispose={null} ref={groupRef} scale={scale}>
+    <group {...props} dispose={null} ref={groupRef} scale={1}>
       
       {/* 1. "DeWhitt" */}
       <mesh 
         geometry={nodes.Logo_Main.geometry} 
         position={[0.094, 10.0, -0.891]} 
         rotation={[Math.PI / 2, 0, 0]}   
-        scale={1.5}
+        scale={1.0}
         castShadow 
         receiveShadow
       >
@@ -79,7 +79,7 @@ export function Model(props) {
         geometry={nodes.Logo_Sub.geometry} 
         position={[0.022, -10.0, 1.159]} 
         rotation={[Math.PI / 2, 0, 0]}
-        scale={1.0}
+        scale={.05}
         castShadow             
         receiveShadow 
       >
