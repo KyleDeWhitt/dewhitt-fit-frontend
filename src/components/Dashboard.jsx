@@ -135,4 +135,73 @@ function Dashboard() {
 
                     {/* 2. ROADMAP */}
                     <div style={{ 
-                        // CHANGE 4: If Mobile, span full width
+                        // CHANGE 4: If Mobile, span full width. If Desktop, span 4.
+                        gridColumn: isMobile ? 'span 1' : 'span 4', 
+                        
+                        background: '#1e293b', 
+                        borderRadius: '24px', 
+                        padding: '30px',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        display: 'flex', 
+                        flexDirection: 'column'
+                    }}>
+                        <h3 style={{ margin: '0 0 30px 0', fontSize: '1.2rem', color: '#e2e8f0', borderBottom: '1px solid #334155', paddingBottom: '15px' }}>
+                            Project Roadmap
+                        </h3>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0px', flex: 1 }}>
+                            {PHASES.map((phase, index) => {
+                                const isActive = index === safeActiveIndex;
+                                const isPast = index < safeActiveIndex;
+                                const isLocked = (!isPremium && index > 0) || index > safeActiveIndex; 
+
+                                return (
+                                    <div key={phase.name} style={{ 
+                                        position: 'relative', 
+                                        paddingLeft: '40px', 
+                                        paddingBottom: '35px',
+                                        opacity: isLocked && index > 1 ? 0.3 : 1 
+                                    }}>
+                                        {index !== PHASES.length - 1 && (
+                                            <div style={{ position: 'absolute', left: '11px', top: '24px', bottom: '0', width: '2px', background: '#334155' }}></div>
+                                        )}
+                                        <div style={{ 
+                                            position: 'absolute', left: '0', top: '2px', 
+                                            width: '24px', height: '24px', borderRadius: '50%', 
+                                            background: isActive ? GOLD_COLOR : (isPast ? '#10b981' : '#334155'),
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            zIndex: 2,
+                                            boxShadow: isActive ? `0 0 15px ${GOLD_COLOR}66` : 'none',
+                                            color: isActive ? 'black' : 'white',
+                                            fontSize: '12px', fontWeight: 'bold'
+                                        }}>
+                                            {isPast ? '✓' : (isLocked ? '🔒' : (index + 1))}
+                                        </div>
+                                        <div>
+                                            <h4 style={{ margin: '0 0 4px 0', fontSize: '1rem', color: isActive ? GOLD_COLOR : 'white' }}>{phase.name}</h4>
+                                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8' }}>{phase.description}</p>
+                                            {isActive && (
+                                                <div style={{ marginTop: '15px' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.75rem', color: '#cbd5e1' }}>
+                                                        <span>Completion</span>
+                                                        <span>{progress}%</span>
+                                                    </div>
+                                                    <div style={{ width: '100%', height: '6px', background: '#334155', borderRadius: '10px', overflow: 'hidden' }}>
+                                                        <div style={{ width: `${progress}%`, height: '100%', background: GOLD_COLOR, borderRadius: '10px' }}></div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {/* Button will now appear nicely below the visualizer on mobile */}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Dashboard;
