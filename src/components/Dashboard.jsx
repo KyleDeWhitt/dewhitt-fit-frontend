@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
 
-// 👇 CORRECTED: Points to your existing Logo file
+// Points to your existing Logo file
 import { Model as Logo } from './Logo'; 
 
 import CheckoutButton from './CheckoutButton'; 
@@ -54,19 +54,18 @@ function Dashboard() {
     const safeActiveIndex = activePhaseIndex === -1 ? 0 : activePhaseIndex;
 
     return (
-        // 👇 MAIN SCROLL CONTAINER
         <div style={{ 
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
             height: '100%', 
-            overflowY: 'scroll', // Forces vertical scrolling
+            overflowY: 'scroll', 
             overflowX: 'hidden',
             background: BG_COLOR, 
             color: 'white', 
             fontFamily: "'Inter', sans-serif",
-            WebkitOverflowScrolling: 'touch' // Smooth scroll on iOS
+            WebkitOverflowScrolling: 'touch' 
         }}>
             
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '20px' : '40px' }}>
@@ -107,13 +106,10 @@ function Dashboard() {
                     gap: '30px' 
                 }}>
 
-                    {/* 1. VISUALIZER (TOP HALF) */}
+                    {/* 1. VISUALIZER */}
                     <div style={{ 
                         gridColumn: isMobile ? 'span 1' : 'span 8', 
-                        
-                        // 👇 FIX: 45vh height on mobile guarantees space at bottom to scroll
                         height: isMobile ? '45vh' : '600px', 
-                        
                         position: 'relative', 
                         overflow: 'hidden', 
                         borderRadius: '24px',
@@ -138,18 +134,21 @@ function Dashboard() {
                             <ambientLight intensity={1.5} />
                             <Environment preset="city" />
                             
-                            {/* Controls kept enabled so you can spin the logo if you touch the box */}
                             <OrbitControls 
                                 enableZoom={false} 
                                 autoRotate 
                                 autoRotateSpeed={isPremium ? 2 : 0.5} 
                             />
                             
-                            <Logo /> 
+                            {/* 👇 FIX: Added rotation={[0, Math.PI, 0]} to flip it 180 degrees */}
+                            <group scale={0.5} rotation={[0, Math.PI, 0]}>
+                                <Logo />
+                            </group>
+                            
                         </Canvas>
                     </div>
 
-                    {/* 2. ROADMAP (BOTTOM HALF - SCROLL ZONE) */}
+                    {/* 2. ROADMAP */}
                     <div style={{ 
                         gridColumn: isMobile ? 'span 1' : 'span 4', 
                         background: '#1e293b', 
