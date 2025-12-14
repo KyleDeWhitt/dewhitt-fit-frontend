@@ -11,7 +11,7 @@ const Section = ({ children, align = 'left' }) => (
     display: 'flex', 
     alignItems: 'center', 
     justifyContent: align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start'),
-    padding: '0 10%'
+    padding: '0 20px' // CHANGED: Reduced padding for mobile safety
   }}>
     <div style={{ width: '100%' }}>{children}</div>
   </div>
@@ -25,18 +25,8 @@ const AnimatedLights = () => {
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    
-    // 1. RIM LIGHT: Fade to 100
-    if (rimLight.current) {
-        rimLight.current.intensity = THREE.MathUtils.lerp(rimLight.current.intensity, 100, 0.02);
-    }
-
-    // 2. KEY LIGHT: Fade to 30
-    if (time > 0.5 && keyLight.current) {
-        keyLight.current.intensity = THREE.MathUtils.lerp(keyLight.current.intensity, 30, 0.03);
-    }
-
-    // 3. FILL & FLASH: Fade to 15/20
+    if (rimLight.current) rimLight.current.intensity = THREE.MathUtils.lerp(rimLight.current.intensity, 100, 0.02);
+    if (time > 0.5 && keyLight.current) keyLight.current.intensity = THREE.MathUtils.lerp(keyLight.current.intensity, 30, 0.03);
     if (time > 1.0) {
         if (fillLight.current) fillLight.current.intensity = THREE.MathUtils.lerp(fillLight.current.intensity, 15, 0.02);
         if (flashLight.current) flashLight.current.intensity = THREE.MathUtils.lerp(flashLight.current.intensity, 20, 0.02);
@@ -46,20 +36,10 @@ const AnimatedLights = () => {
   return (
     <>
       <ambientLight intensity={1.5} />
-      
       <directionalLight ref={keyLight} position={[5, 10, 20]} intensity={0} color="#fff0dd" castShadow />
       <directionalLight ref={fillLight} position={[-10, 0, 20]} intensity={0} color="#dbeeff" />
       <pointLight ref={flashLight} position={[0, 0, 15]} intensity={0} color="#ffffff" />
-      
-      <spotLight 
-        ref={rimLight}
-        position={[0, 20, -10]} 
-        angle={0.6} 
-        penumbra={1} 
-        intensity={0} 
-        color="#00bdff" 
-        castShadow 
-      />
+      <spotLight ref={rimLight} position={[0, 20, -10]} angle={0.6} penumbra={1} intensity={0} color="#00bdff" castShadow />
     </>
   );
 };
@@ -84,10 +64,10 @@ const ThreeScene = () => {
             <Scroll html style={{ width: '100%' }}>
                 
                 {/* NAV */}
-                <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 40px', width: '100%', boxSizing: 'border-box' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>DeWhitt<span style={{ color: '#FFD700' }}>Designs</span></div>
+                <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '20px', width: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>DeWhitt<span style={{ color: '#FFD700' }}>Designs</span></div>
                   <a href="/login">
-                    <button style={{ padding: '10px 20px', borderRadius: '30px', border: 'none', background: 'white', color: 'black', fontWeight: 'bold', cursor: 'pointer', pointerEvents: 'auto' }}>
+                    <button style={{ padding: '8px 16px', borderRadius: '30px', border: 'none', background: 'white', color: 'black', fontWeight: 'bold', cursor: 'pointer', pointerEvents: 'auto' }}>
                       Start Project
                     </button>
                   </a>
@@ -98,7 +78,8 @@ const ThreeScene = () => {
 
                 {/* 2. HERO */}
                 <Section>
-                  <h1 style={{ fontSize: '5rem', lineHeight: '1', marginBottom: '20px', color: 'white' }}>
+                   {/* CHANGED: Using 'min' makes font smaller on mobile automatically */}
+                  <h1 style={{ fontSize: 'min(5rem, 12vw)', lineHeight: '1', marginBottom: '20px', color: 'white' }}>
                     Stop Building <br /> Boring Websites.
                   </h1>
                   <p style={{ fontSize: '1.2rem', color: '#ccc', maxWidth: '500px' }}>
@@ -116,16 +97,14 @@ const ThreeScene = () => {
                                 <li>Generic Wordpress Templates</li>
                                 <li>Insecure Plugins & Hacks</li>
                                 <li>Slow Loading Speeds</li>
-                                <li>You Don't Own The Code</li>
                             </ul>
                         </div>
                         <div className="comparison-card good">
                             <h3>The DeWhitt Way</h3>
                             <ul>
                                 <li>Custom React Engine</li>
-                                <li>Bank-Grade Security (JWT/SSL)</li>
+                                <li>Bank-Grade Security</li>
                                 <li>Immersive 3D Interaction</li>
-                                <li>Scalable Database Built-In</li>
                             </ul>
                         </div>
                     </div>
@@ -138,37 +117,23 @@ const ThreeScene = () => {
                     
                     <div className="engine-card">
                         <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '30px', marginBottom: '30px', textAlign: 'center' }}>
-                            <h2 style={{ color: 'white', fontSize: '2.5rem', margin: 0 }}>The Engine Under The Hood</h2>
+                            <h2 style={{ color: 'white', fontSize: 'min(2.5rem, 8vw)', margin: 0 }}>The Engine Under The Hood</h2>
                         </div>
                         
                         <div className="engine-specs">
                             <div className="spec-item">
                                 <h3>⚡ Full-Stack Core</h3>
-                                <p>Built on <strong>Node.js</strong> and <strong>PostgreSQL</strong>. A scalable backend architecture that grows with your business.</p>
+                                <p>Built on <strong>Node.js</strong> and <strong>PostgreSQL</strong>.</p>
                             </div>
                             
                             <div className="spec-item">
-                                <h3 style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                    <div className="cube-spinner">
-                                        <div className="cube-face"></div>
-                                        <div className="cube-face"></div>
-                                        <div className="cube-face"></div>
-                                        <div className="cube-face"></div>
-                                        <div className="cube-face"></div>
-                                        <div className="cube-face"></div>
-                                    </div>
-                                    3D Native
-                                </h3>
-                                <p>Powered by <strong>React Three Fiber</strong>. We don't just embed images; we render live, interactive 3D worlds.</p>
+                                <h3>🧊 3D Native</h3>
+                                <p>Powered by <strong>React Three Fiber</strong>.</p>
                             </div>
 
                             <div className="spec-item">
-                                <h3>💳 Monetization</h3>
-                                <p>Pre-configured <strong>Stripe</strong> integration for subscriptions, one-time payments, and customer management.</p>
-                            </div>
-                            <div className="spec-item">
-                                <h3>🔒 Bank-Grade Security</h3>
-                                <p>Standardized <strong>JWT Authentication</strong>, SSL Encryption, and Rate Limiting to protect user data.</p>
+                                <h3>🔒 Security</h3>
+                                <p>Standardized <strong>JWT Auth</strong> & SSL.</p>
                             </div>
                         </div>
                     </div>
@@ -176,28 +141,28 @@ const ThreeScene = () => {
                   </div>
                 </Section>
 
-                {/* 5. CTA - NOW WRAPPED IN GLASS */}
+                {/* 5. CTA */}
                 <Section align="center">
-                  {/* 👇 FIXED: Added Glass Styles here */}
                   <div style={{ 
                       background: 'rgba(255, 255, 255, 0.05)',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       backdropFilter: 'blur(15px)',
                       borderRadius: '40px',
-                      padding: '60px 40px',
+                      padding: '40px 20px', // Reduced padding
                       maxWidth: '800px',
                       width: '100%',
                       margin: '0 auto',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      boxSizing: 'border-box' // <--- CRITICAL FIX: Keeps padding inside the box
                   }}>
-                    <h2 style={{ fontSize: '3rem', color: '#FFD700', marginBottom: '30px' }}>Let's Build Something Solid.</h2>
+                    <h2 style={{ fontSize: 'min(3rem, 10vw)', color: '#FFD700', marginBottom: '30px' }}>Let's Build Something Solid.</h2>
                     <a href="/register">
-                        <button style={{ marginTop: '10px', padding: '20px 60px', fontSize: '1.5rem', borderRadius: '50px', background: '#FFD700', color: 'black', border: 'none', cursor: 'pointer', pointerEvents: 'auto', fontWeight: 'bold' }}>
+                        <button style={{ marginTop: '10px', padding: '15px 40px', fontSize: '1.2rem', borderRadius: '50px', background: '#FFD700', color: 'black', border: 'none', cursor: 'pointer', pointerEvents: 'auto', fontWeight: 'bold' }}>
                         Get Started
                         </button>
                     </a>
-                    <div style={{ marginTop: '40px', color: '#666' }}>
-                      © 2025 DeWhitt Designs. Built with React Three Fiber.
+                    <div style={{ marginTop: '40px', color: '#666', fontSize: '0.8rem' }}>
+                      © 2025 DeWhitt Designs.
                     </div>
                   </div>
                 </Section>
