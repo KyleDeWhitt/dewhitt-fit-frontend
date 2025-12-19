@@ -82,7 +82,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message: response.data.message };
       
     } catch (error) {
-      console.error("Registration Error:", error.response ? error.response.data : error.message);
+      console.error("Registration Error:", error);
+      if (error.response) {
+        console.error("Backend Response:", error.response.data);
+      }
       return { 
         success: false, 
         message: error.response?.data?.message || 'Registration failed. Please try again.',
