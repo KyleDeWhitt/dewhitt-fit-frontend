@@ -107,8 +107,8 @@ function RegistrationForm() {
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ flex: 1, marginRight: '10px' }}>
                             <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>FIRST NAME</label>
                             <input 
                                 name="first_name" 
@@ -116,10 +116,10 @@ function RegistrationForm() {
                                 placeholder="Jane"
                                 value={formData.first_name} 
                                 onChange={handleChange} 
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', boxSizing: 'border-box' }}
                             />
                         </div>
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, marginLeft: '10px' }}>
                             <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>LAST NAME</label>
                             <input 
                                 name="last_name" 
@@ -127,7 +127,7 @@ function RegistrationForm() {
                                 placeholder="Doe"
                                 value={formData.last_name} 
                                 onChange={handleChange} 
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', boxSizing: 'border-box' }}
                             />
                         </div>
                     </div>
