@@ -140,8 +140,8 @@ function Dashboard() {
                                 autoRotateSpeed={isPremium ? 2 : 0.5} 
                             />
                             
-                            {/* 👇 FIX: Added rotation={[0, Math.PI, 0]} to flip it 180 degrees */}
-                            <group scale={0.5} rotation={[0, Math.PI, 0]}>
+                            {/* 👇 FIX: scale Z is now negative (-0.5) to fix the depth order */}
+                            <group scale={[-0.5, 0.5, -0.5]} rotation={[0, Math.PI, 0]}>
                                 <Logo />
                             </group>
                             

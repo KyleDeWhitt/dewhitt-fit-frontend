@@ -35,12 +35,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
   
   // --------------------------------------------------------
-  // 👇 FIXED LOGIN FUNCTION
-  // Now accepts (email, password), calls API, and saves REAL token
+  // 👇 FIXED LOGIN FUNCTION (Updated Path)
   // --------------------------------------------------------
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/login`, { email, password });
+      // 👇 CHANGED: Points to /api/auth/login
+      const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       
       // Extract data from Backend Response
       const { token, user: userData } = response.data;
@@ -52,12 +52,10 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       setIsLoggedIn(true);
 
-      // Return the data so Login.jsx can handle the redirect logic
       return response.data;
 
     } catch (error) {
       console.error("Login Request Failed:", error);
-      // Throw error so Login.jsx can display the red box
       throw new Error(error.response?.data?.message || 'Login failed. Please check your network.');
     }
   };
@@ -70,19 +68,18 @@ export const AuthProvider = ({ children }) => {
     navigate('/login'); 
   };
   
+  // --------------------------------------------------------
+  // 👇 FIXED REGISTER FUNCTION (Updated Path)
+  // --------------------------------------------------------
   const registerUser = async (registrationData) => {
     try {
-      const response = await axios.post(`${API_URL}/register`, registrationData); 
+      // 👇 CHANGED: Points to /api/auth/register
+      const response = await axios.post(`${API_URL}/api/auth/register`, registrationData); 
       
-      const { token, user: userData } = response.data; 
+      // NOTE: We do NOT automatically log them in anymore because they need to verify email first.
+      // We just return success so the form can show the "Check your email" message.
       
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      setIsLoggedIn(true);
-      
-      navigate('/setup-profile'); 
-      return { success: true };
+      return { success: true, message: response.data.message };
       
     } catch (error) {
       console.error("Registration Error:", error.response ? error.response.data : error.message);

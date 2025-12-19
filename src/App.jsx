@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileSetup from './components/ProfileSetup';
 import AdminDashboard from './components/AdminDashboard';
+import VerifyEmail from './components/VerifyEmail';
 
 const GlobalStyles = () => (
   <style>{`
@@ -52,16 +53,22 @@ function App() {
           <GlobalStyles />
           
           <Routes>
+            {/* PUBLIC ROUTES */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegistrationForm />} />
             
+            {/* 👇 NEW VERIFY EMAIL ROUTE */}
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            
+            {/* PROTECTED ROUTES (Must be logged in) */}
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/setup-profile" element={<ProfileSetup />} />
                 <Route path="/admin" element={<AdminDashboard />} />
             </Route>
             
+            {/* 404 PAGE */}
             <Route path="*" element={<h1 style={{color: 'white', textAlign: 'center', marginTop: '100px'}}>404 Not Found</h1>} />
           </Routes>
       </AuthProvider>
