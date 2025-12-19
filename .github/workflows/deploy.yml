@@ -10,27 +10,13 @@ jobs:
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 🔨 Install Dependencies and Build
         run: |
           npm install
           npm run build
-          echo "------ DEBUG: LISTING FILES ------"
-          ls -R
-          echo "----------------------------------"
 
-      - name: 📂 Sync files to Hostinger
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ./
-          protocol: ftp
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+      - name: 🚀 Force Upload (LFTP)
+        run: |
+          sudo apt-get install -y lftp
+          lftp -e "set ssl:verify-certificate no; mirror -R --verbose ./dist/ ./public_html/" -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ${{ secrets.FTP_SERVER }}
