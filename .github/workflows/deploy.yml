@@ -16,8 +16,12 @@ jobs:
           npm install
           npm run build
 
-      - name: 🚀 Force Upload (LFTP)
-        run: |
-          sudo apt-get install -y lftp
-          echo "Starting upload..."
-          lftp -e "set ssl:verify-certificate no; ls; mirror -R --verbose ./dist/ ./; bye" -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ${{ secrets.FTP_SERVER }}
+      - name: 📂 Sync files to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./domains/darkseagreen-hamster-262740.hostingersite.com/public_html/
+          protocol: ftp
