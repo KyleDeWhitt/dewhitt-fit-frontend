@@ -1,61 +1,92 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { useGLTF, useScroll } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import React, { useEffect, useRef } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 export function Model(props) {
-  const { nodes } = useGLTF('/Logo.glb')
-  const groupRef = useRef()
-  const scroll = useScroll()
-
-  const [scale, setScale] = useState(window.innerWidth < 768 ? 0.55 : 1)
+  const { scene } = useGLTF('/Logo.glb');
+  const topRef = useRef();
+  const bottomRef = useRef();
 
   useEffect(() => {
-    const handleResize = () => {
-      setScale(window.innerWidth < 768 ? 0.55 : 1)
+    const meshes = [];
+    scene.traverse((child) => {
+      if (child.isMesh) {
+        child.geometry.computeBoundingBox();
+        meshes.push(child);
+      }
+    });
+
+    if (meshes.length >= 2) {
+      // Sort by Geometry Height (Reliable)
+      meshes.sort((a, b) => {
+        const centerA = new THREE.Vector3();
+        const centerB = new THREE.Vector3();
+        a.geometry.boundingBox.getCenter(centerA);
+        b.geometry.boundingBox.getCenter(centerB);
+        return centerB.y - centerA.y; // High Y = Top
+      });
+
+      const topMesh = meshes[0];     // "DeWhitt"
+      const bottomMesh = meshes[1];  // "DESIGNS"
+
+      // --- 1. TOP WORD (GOLD) ---
+      topMesh.material = new THREE.MeshStandardMaterial({
+        color: '#FFD700',
+        metalness: 1,
+        roughness: 0.15,
+      });
+      topRef.current = topMesh;
+      
+      // Position:
+      topMesh.position.set(0, 0, 0); 
+      topMesh.scale.set(1, 1, 1);
+      
+      // Animation Setup
+      topMesh.userData.finalZ = 0; 
+      topMesh.position.z -= 5; 
+
+      // --- 2. BOTTOM WORD (SILVER) ---
+      bottomMesh.material = new THREE.MeshStandardMaterial({
+        color: '#C0C0C0',
+        metalness: 1,
+        roughness: 0.15,
+      });
+      bottomRef.current = bottomMesh;
+
+      // POSITION FIX:
+      // y = 0.5 -> Forward (Depth)
+      // z = 1.4 -> DOWN (Height). Increased from 0.7 to 1.4 to clear the gap.
+      bottomMesh.position.set(0, 0.5, 1.4); 
+      bottomMesh.scale.set(1, 1, 1);
+
+      // Animation Setup
+      bottomMesh.userData.finalZ = 1.4; 
+      bottomMesh.position.z += 5; 
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [scene]);
 
   useFrame((state, delta) => {
-    const scrollOffset = scroll?.offset || 0; 
-    const mouseX = state.mouse.x;
-    const mouseY = state.mouse.y;
-
-    if (groupRef.current) {
-        const targetZ = scrollOffset * -20;
-        groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.05);
-
-        const floatY = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-        groupRef.current.position.y = floatY;
-        
-        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, mouseX * 0.2, 0.05);
-        groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -mouseY * 0.2, 0.05);
+    // Smooth Animation
+    if (topRef.current) {
+      topRef.current.position.z = THREE.MathUtils.lerp(
+        topRef.current.position.z,
+        topRef.current.userData.finalZ,
+        delta * 3
+      );
     }
-  })
+    if (bottomRef.current) {
+      bottomRef.current.position.z = THREE.MathUtils.lerp(
+        bottomRef.current.position.z,
+        bottomRef.current.userData.finalZ,
+        delta * 3
+      );
+    }
+  });
 
   return (
-    <group {...props} dispose={null} ref={groupRef} scale={scale}>
-      {nodes.path1 && (
-        <mesh 
-          geometry={nodes.path1.geometry} 
-          position={[0, 0, 0]} // Reset position for single element
-          rotation={[Math.PI / 2, 0, 0]}   
-          scale={1.5}
-          castShadow 
-          receiveShadow
-        >
-            <meshStandardMaterial 
-              color="#FFB800"        
-              metalness={1.0}        
-              roughness={0.15}       
-              envMapIntensity={2.5}  
-            />
-        </mesh>
-      )}
-    </group>
-  )
+    <primitive object={scene} rotation={[Math.PI / 2, 0, 0]} {...props} />
+  );
 }
 
-useGLTF.preload('/Logo.glb')
+useGLTF.preload('/Logo.glb');

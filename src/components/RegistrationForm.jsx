@@ -13,7 +13,7 @@ function RegistrationForm() {
     });
     
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false); // New state to track success
+    const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -34,11 +34,10 @@ function RegistrationForm() {
             return;
         }
 
-        // Call the updated registerUser function
         const result = await registerUser(formData);
 
         if (result.success) {
-            setSuccess(true); // 👇 Show the success message instead of redirecting
+            setSuccess(true);
         } else {
             setError(result.message);
         }
@@ -46,7 +45,7 @@ function RegistrationForm() {
         setLoading(false);
     };
 
-    // 👇 Render this "Success View" if registration worked
+    // --- SUCCESS VIEW (Also styled with Glass) ---
     if (success) {
         return (
             <div style={{ 
@@ -56,21 +55,24 @@ function RegistrationForm() {
                 justifyContent: 'center',
                 fontFamily: "'Inter', sans-serif",
                 color: 'white',
-                textAlign: 'center'
+                textAlign: 'center',
+                backgroundColor: '#0b1121'
             }}>
                 <div style={{ 
-                    background: 'rgba(255,255,255,0.05)', 
                     padding: '40px', 
-                    borderRadius: '16px', 
+                    borderRadius: '24px', 
                     maxWidth: '400px',
-                    border: '1px solid rgba(255,255,255,0.1)'
+                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
                 }}>
                     <h2 style={{ color: '#10b981', fontSize: '2rem', marginBottom: '10px' }}>✅ Success!</h2>
-                    <p style={{ fontSize: '1.1rem', marginBottom: '20px' }}>
+                    <p style={{ fontSize: '1.1rem', marginBottom: '20px', color: '#cbd5e1' }}>
                         Account created for <strong>{formData.email}</strong>.
                     </p>
-                    <div style={{ background: 'rgba(255, 215, 0, 0.1)', padding: '15px', borderRadius: '8px', border: '1px solid #FFD700', marginBottom: '20px' }}>
-                        <p style={{ margin: 0, color: '#FFD700' }}>
+                    <div style={{ background: 'rgba(255, 215, 0, 0.1)', padding: '15px', borderRadius: '12px', border: '1px solid #FFD700', marginBottom: '20px' }}>
+                        <p style={{ margin: 0, color: '#FFD700', fontSize: '0.9rem' }}>
                             Please check your inbox and click the verification link to activate your account.
                         </p>
                     </div>
@@ -82,77 +84,113 @@ function RegistrationForm() {
         );
     }
 
-    // Standard Registration Form
+    // --- MAIN REGISTRATION FORM ---
     return (
         <div style={{ 
             minHeight: '100vh', 
+            width: '100%',
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
+            backgroundColor: '#0b1121',
             fontFamily: "'Inter', sans-serif"
         }}>
             <div style={{ 
                 width: '100%', 
-                maxWidth: '400px', 
+                maxWidth: '450px', // Slightly wider for the two-column inputs
                 padding: '40px', 
-                background: 'rgba(255, 255, 255, 0.05)', 
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
+                backgroundColor: 'rgba(255, 255, 255, 0.03)', // MATCHED LOGIN STYLE
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '24px',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
             }}>
-                <h2 style={{ color: 'white', textAlign: 'center', marginBottom: '30px', fontSize: '1.8rem' }}>
-                    Create Account
+                <h2 style={{ color: 'white', textAlign: 'center', marginBottom: '10px', fontSize: '1.8rem', fontWeight: '800' }}>
+                    Create <span style={{ color: '#FFD700' }}>Account</span>
                 </h2>
+                <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '30px', fontSize: '0.95rem' }}>
+                    Start your journey with DeWhitt Designs.
+                </p>
 
-                {error && <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', padding: '10px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}
+                {error && (
+                    <div style={{ 
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid #ef4444', 
+                        color: '#fca5a5', 
+                        padding: '12px', 
+                        borderRadius: '8px', 
+                        marginBottom: '20px', 
+                        fontSize: '0.9rem', 
+                        textAlign: 'center' 
+                    }}>
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ flex: 1, marginRight: '10px' }}>
-                            <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>FIRST NAME</label>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <div style={{ flex: 1 }}>
+                            <label style={{ color: '#cbd5e1', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', marginBottom: '8px', display: 'block' }}>FIRST NAME</label>
                             <input 
                                 name="first_name" 
                                 type="text" 
                                 placeholder="Jane"
                                 value={formData.first_name} 
                                 onChange={handleChange} 
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', boxSizing: 'border-box' }}
+                                style={{ 
+                                    width: '100%', padding: '12px', borderRadius: '12px', 
+                                    border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', 
+                                    color: 'white', outline: 'none', boxSizing: 'border-box' 
+                                }}
                             />
                         </div>
-                        <div style={{ flex: 1, marginLeft: '10px' }}>
-                            <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>LAST NAME</label>
+                        <div style={{ flex: 1 }}>
+                            <label style={{ color: '#cbd5e1', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', marginBottom: '8px', display: 'block' }}>LAST NAME</label>
                             <input 
                                 name="last_name" 
                                 type="text" 
                                 placeholder="Doe"
                                 value={formData.last_name} 
                                 onChange={handleChange} 
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', boxSizing: 'border-box' }}
+                                style={{ 
+                                    width: '100%', padding: '12px', borderRadius: '12px', 
+                                    border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', 
+                                    color: 'white', outline: 'none', boxSizing: 'border-box' 
+                                }}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>EMAIL ADDRESS</label>
+                        <label style={{ color: '#cbd5e1', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', marginBottom: '8px', display: 'block' }}>EMAIL ADDRESS</label>
                         <input 
                             name="email" 
                             type="email" 
                             placeholder="name@company.com"
                             value={formData.email} 
                             onChange={handleChange} 
-                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
+                            style={{ 
+                                width: '100%', padding: '12px', borderRadius: '12px', 
+                                border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', 
+                                color: 'white', outline: 'none', boxSizing: 'border-box' 
+                            }}
                         />
                     </div>
 
                     <div>
-                        <label style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '5px', display: 'block' }}>PASSWORD</label>
+                        <label style={{ color: '#cbd5e1', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', marginBottom: '8px', display: 'block' }}>PASSWORD</label>
                         <input 
                             name="password" 
                             type="password" 
                             placeholder="••••••••"
                             value={formData.password} 
                             onChange={handleChange} 
-                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
+                            style={{ 
+                                width: '100%', padding: '12px', borderRadius: '12px', 
+                                border: '1px solid #334155', background: 'rgba(0,0,0,0.2)', 
+                                color: 'white', outline: 'none', boxSizing: 'border-box' 
+                            }}
                         />
                     </div>
 
@@ -161,22 +199,26 @@ function RegistrationForm() {
                         disabled={loading}
                         style={{ 
                             marginTop: '10px', 
-                            padding: '14px', 
+                            padding: '16px', 
                             background: '#FFD700', 
                             color: '#000', 
-                            fontWeight: 'bold', 
+                            fontWeight: '800', 
+                            fontSize: '1.1rem',
                             border: 'none', 
-                            borderRadius: '8px', 
+                            borderRadius: '50px', // MATCHED LOGIN PILL SHAPE
                             cursor: loading ? 'not-allowed' : 'pointer',
-                            opacity: loading ? 0.7 : 1
+                            opacity: loading ? 0.7 : 1,
+                            transition: 'transform 0.1s'
                         }}
+                        onMouseOver={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
+                        onMouseOut={(e) => !loading && (e.currentTarget.style.transform = 'scale(1)')}
                     >
                         {loading ? 'Creating Account...' : 'Register'}
                     </button>
                 </form>
 
-                <p style={{ textAlign: 'center', color: '#94a3b8', marginTop: '20px', fontSize: '0.9rem' }}>
-                    Already have an account? <Link to="/login" style={{ color: '#FFD700', textDecoration: 'none' }}>Sign In</Link>
+                <p style={{ textAlign: 'center', color: '#94a3b8', marginTop: '30px', fontSize: '0.95rem' }}>
+                    Already have an account? <Link to="/login" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>Sign In</Link>
                 </p>
             </div>
         </div>

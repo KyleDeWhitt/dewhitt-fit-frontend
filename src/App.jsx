@@ -12,36 +12,38 @@ import VerifyEmail from './components/VerifyEmail';
 
 const GlobalStyles = () => (
   <style>{`
-    /* Force Transparent Backgrounds on EVERYTHING */
-    * {
-      background-color: transparent !important;
-    }
+    /* 🔴 DELETED THE LINE THAT BROKE EVERYTHING */
+    /* * { background-color: transparent !important; } */
     
-    /* Re-apply backgrounds ONLY where we want them */
+    /* Re-apply nice dark background */
     body {
-      background-color: #0b1121 !important; /* Updated Navy */
+      background-color: #0b1121; 
+      margin: 0;
+      color: white;
     }
     
-    /* Restoring card backgrounds */
-    .comparison-card {
-      background-color: rgba(255, 255, 255, 0.05) !important;
+    /* Fix Card Backgrounds so they are readable */
+    .comparison-card, .engine-card, .cta-card, .auth-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .comparison-card.good {
-      background-color: rgba(255, 215, 0, 0.05) !important;
-    }
-    .engine-card, .cta-card, .auth-card {
-      background-color: rgba(255, 255, 255, 0.05) !important;
+      background-color: rgba(255, 215, 0, 0.05);
     }
     
-    /* Inputs & Buttons */
+    /* Buttons */
     button {
-      background-color: #FFD700 !important;
+      background-color: #FFD700;
+      border: none;
+      cursor: pointer;
     }
     nav button {
-      background-color: white !important;
+      background-color: white;
     }
     input, select {
-      background-color: rgba(255, 255, 255, 0.1) !important;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
   `}</style>
 );
@@ -50,26 +52,21 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-          <GlobalStyles />
+          <GlobalStyles /> {/* ✅ ENABLED AGAIN */}
           
           <Routes>
-            {/* PUBLIC ROUTES */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegistrationForm />} />
-            
-            {/* 👇 NEW VERIFY EMAIL ROUTE */}
             <Route path="/verify-email" element={<VerifyEmail />} />
             
-            {/* PROTECTED ROUTES (Must be logged in) */}
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/setup-profile" element={<ProfileSetup />} />
                 <Route path="/admin" element={<AdminDashboard />} />
             </Route>
             
-            {/* 404 PAGE */}
-            <Route path="*" element={<h1 style={{color: 'white', textAlign: 'center', marginTop: '100px'}}>404 Not Found</h1>} />
+            <Route path="*" element={<h1 style={{textAlign: 'center', marginTop: '100px'}}>404 Not Found</h1>} />
           </Routes>
       </AuthProvider>
     </Router>

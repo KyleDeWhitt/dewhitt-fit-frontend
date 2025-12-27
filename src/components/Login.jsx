@@ -8,7 +8,6 @@ function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     
-    // We assume login() returns the user data so we can check the role
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -17,17 +16,11 @@ function Login() {
         setError('');
         setLoading(true);
         try {
-            // 1. Perform the login
-            // (Note: The bug saving the wrong token is inside this login() function in AuthContext)
             const response = await login(email, password);
             
-            // 2. INTELLIGENT REDIRECT
-            // Check the role and send them to the right "Home Base"
             if (response && response.user && response.user.role === 'admin') {
-                console.log('👑 Admin detected. Redirecting to Mission Control...');
                 navigate('/admin');
             } else {
-                console.log('💼 Client detected. Redirecting to Portal...');
                 navigate('/dashboard'); 
             }
 
@@ -40,62 +33,151 @@ function Login() {
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
+        <div style={{ 
+            minHeight: '100vh', 
+            width: '100%',
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            backgroundColor: '#0b1121', // Deep dark blue background
+            fontFamily: "'Inter', sans-serif"
+        }}>
+            <div style={{ 
+                width: '100%', 
+                maxWidth: '420px', 
+                padding: '40px', 
+                backgroundColor: 'rgba(255, 255, 255, 0.03)', // Subtle glass effect
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '24px',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+            }}>
                 
                 {/* Header */}
-                <h2 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '10px' }}>
-                    Welcome <span style={{ color: '#FFD700' }}>Back</span>
-                </h2>
-                <p style={{ color: '#888', marginBottom: '40px' }}>
-                    Access your DeWhitt Designs dashboard.
-                </p>
+                <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                    <h2 style={{ fontSize: '2rem', color: 'white', margin: '0 0 10px 0', fontWeight: '800' }}>
+                        Welcome <span style={{ color: '#FFD700' }}>Back</span>
+                    </h2>
+                    <p style={{ color: '#94a3b8', margin: 0, fontSize: '0.95rem' }}>
+                        Access your DeWhitt Designs dashboard.
+                    </p>
+                </div>
 
                 {/* Error Message */}
                 {error && (
-                    <div style={{ background: 'rgba(255, 0, 0, 0.1)', border: '1px solid red', color: '#ff6b6b', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
+                    <div style={{ 
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid #ef4444', 
+                        color: '#fca5a5', 
+                        padding: '12px', 
+                        borderRadius: '8px', 
+                        marginBottom: '20px',
+                        fontSize: '0.9rem',
+                        textAlign: 'center'
+                    }}>
                         {error}
                     </div>
                 )}
 
                 {/* Form */}
                 <form onSubmit={handleSubmit}>
-                    <div className="auth-input-group">
-                        <label className="auth-label">EMAIL ADDRESS</label>
+                    <div style={{ marginBottom: '20px' }}>
+                        <label style={{ 
+                            display: 'block', 
+                            color: '#cbd5e1', 
+                            fontSize: '0.75rem', 
+                            fontWeight: '700', 
+                            letterSpacing: '1px', 
+                            marginBottom: '8px' 
+                        }}>
+                            EMAIL ADDRESS
+                        </label>
                         <input 
                             type="email" 
-                            className="auth-input" 
                             placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            style={{ 
+                                width: '100%', 
+                                padding: '14px', 
+                                borderRadius: '12px', 
+                                border: '1px solid #334155', 
+                                backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                                color: 'white', 
+                                fontSize: '1rem',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                                transition: 'border-color 0.2s'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                            onBlur={(e) => e.target.style.borderColor = '#334155'}
                         />
                     </div>
 
-                    <div className="auth-input-group">
-                        <label className="auth-label">PASSWORD</label>
+                    <div style={{ marginBottom: '30px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <label style={{ 
+                                color: '#cbd5e1', 
+                                fontSize: '0.75rem', 
+                                fontWeight: '700', 
+                                letterSpacing: '1px'
+                            }}>
+                                PASSWORD
+                            </label>
+                        </div>
                         <input 
                             type="password" 
-                            className="auth-input" 
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            style={{ 
+                                width: '100%', 
+                                padding: '14px', 
+                                borderRadius: '12px', 
+                                border: '1px solid #334155', 
+                                backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                                color: 'white', 
+                                fontSize: '1rem',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                                transition: 'border-color 0.2s'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                            onBlur={(e) => e.target.style.borderColor = '#334155'}
                         />
                     </div>
 
                     <button 
                         type="submit" 
                         disabled={loading}
-                        style={{ width: '100%', padding: '15px', borderRadius: '50px', background: '#FFD700', color: 'black', fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}
+                        style={{ 
+                            width: '100%', 
+                            padding: '16px', 
+                            borderRadius: '50px', 
+                            backgroundColor: '#FFD700', 
+                            color: '#000', 
+                            fontWeight: '800', 
+                            fontSize: '1.1rem', 
+                            border: 'none', 
+                            cursor: loading ? 'wait' : 'pointer',
+                            transition: 'transform 0.1s',
+                            opacity: loading ? 0.7 : 1
+                        }}
+                        onMouseOver={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
+                        onMouseOut={(e) => !loading && (e.currentTarget.style.transform = 'scale(1)')}
                     >
                         {loading ? 'Accessing...' : 'Sign In'}
                     </button>
                 </form>
 
                 {/* Footer Link */}
-                <div style={{ marginTop: '30px', color: '#ccc' }}>
-                    Don't have an account? <Link to="/register" className="auth-link">Start a Project</Link>
+                <div style={{ marginTop: '30px', textAlign: 'center', color: '#94a3b8', fontSize: '0.95rem' }}>
+                    Don't have an account?{' '}
+                    <Link to="/register" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>
+                        Start a Project
+                    </Link>
                 </div>
 
             </div>
